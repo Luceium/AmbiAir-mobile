@@ -2,9 +2,16 @@ import SwiftUI
 
 @main
 struct iOSApp: App {
+    @State private var isActive = false
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            if isActive {
+                ContentView()
+            } else {
+                SwiftUISplashScreen(isActive: $isActive)
+                    .edgesIgnoringSafeArea(.all)
+            }
         }
     }
 }
