@@ -22,6 +22,9 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            implementation("androidx.credentials:credentials:1.5.0-rc01")
+            // for android versions below 14
+            implementation("androidx.credentials:credentials-play-services-auth:1.5.0-rc01")
         }
         commonMain.dependencies {
             implementation(compose.runtime)
