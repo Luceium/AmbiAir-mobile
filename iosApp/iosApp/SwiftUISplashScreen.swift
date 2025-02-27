@@ -8,10 +8,17 @@ struct SwiftUISplashScreen: View {
         ZStack {
             Color.white.edgesIgnoringSafeArea(.all)
 
-            Image("logo")
-                .resizable()
-                .scaledToFit()
-                .frame(width: 247, height: 243)
+            VStack(spacing: 20) {
+                Image("logo")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 247, height: 243)
+
+                Image("logo-text")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 200)
+            }
         }
         .opacity(opacity)
         .onAppear {

@@ -5,7 +5,7 @@ struct ContentView: View {
     @State private var showContent = false
     var body: some View {
         VStack {
-            Button("Click me!") {
+            Button("Click balls!") {
                 withAnimation {
                     showContent = !showContent
                 }

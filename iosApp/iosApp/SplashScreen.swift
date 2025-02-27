@@ -14,6 +14,7 @@ struct SplashScreen: UIViewControllerRepresentable {
 class SplashViewController: UIViewController {
     private var isActive: Binding<Bool>
     private var logoImageView: UIImageView!
+    private var logoTextImageView: UIImageView!
     private var mainView: UIView!
 
     init(isActive: Binding<Bool>) {
@@ -54,12 +55,34 @@ class SplashViewController: UIViewController {
         logoImageView.contentMode = .scaleAspectFit
         let logoWidth: CGFloat = 247
         let logoHeight: CGFloat = 243
+
+        // Logo text image view
+        logoTextImageView = UIImageView(image: UIImage(named: "logo-text"))
+        logoTextImageView.contentMode = .scaleAspectFit
+        let logoTextWidth: CGFloat = 200
+        let logoTextHeight: CGFloat = 50 // Adjust based on actual image aspect ratio
+
+        // Calculate positions for vertical stacking
+        let totalHeight = logoHeight + 20 + logoTextHeight // 20 is spacing between images
+        let startY = (mainView.frame.height - totalHeight) / 2
+
+        // Position logo
         logoImageView.frame = CGRect(
             x: (mainView.frame.width - logoWidth) / 2,
-            y: (mainView.frame.height - logoHeight) / 2,
+            y: startY,
             width: logoWidth,
             height: logoHeight
         )
+
+        // Position logo text
+        logoTextImageView.frame = CGRect(
+            x: (mainView.frame.width - logoTextWidth) / 2,
+            y: startY + logoHeight + 20, // 20 is spacing
+            width: logoTextWidth,
+            height: logoTextHeight
+        )
+
         mainView.addSubview(logoImageView)
+        mainView.addSubview(logoTextImageView)
     }
 }
