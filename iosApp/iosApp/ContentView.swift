@@ -3,26 +3,44 @@ import Shared
 
 struct ContentView: View {
     @State private var showContent = false
-    var body: some View {
-        VStack {
-            Button("Click balls!") {
-                withAnimation {
-                    showContent = !showContent
-                }
-            }
+    @State private var showLoginView = false
 
-            if showContent {
-                VStack(spacing: 16) {
-                    Image(systemName: "swift")
-                        .font(.system(size: 200))
-                        .foregroundColor(.accentColor)
-                    Text("SwiftUI: \(Greeting().greet())")
+    var body: some View {
+        NavigationView {
+            VStack {
+                Button("Click me!") {
+                    withAnimation {
+                        showContent = !showContent
+                    }
                 }
-                .transition(.move(edge: .top).combined(with: .opacity))
+
+                if showContent {
+                    VStack(spacing: 16) {
+                        Image(systemName: "swift")
+                            .font(.system(size: 200))
+                            .foregroundColor(.accentColor)
+                        Text("SwiftUI: \(Greeting().greet())")
+                    }
+                    .transition(.move(edge: .top).combined(with: .opacity))
+                }
+
+                Spacer()
+
+                Button("Show Login Page") {
+                    showLoginView = true
+                }
+                .padding()
+                .background(Color.blue)
+                .foregroundColor(.white)
+                .cornerRadius(8)
+                .padding(.bottom, 20)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+            .padding()
+            .fullScreenCover(isPresented: $showLoginView) {
+                LoginViewUI()
             }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .padding()
     }
 }
 
