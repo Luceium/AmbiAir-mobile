@@ -6,12 +6,15 @@ struct iOSApp: App {
 
     var body: some Scene {
         WindowGroup {
-            if isActive {
-                ContentView()
-            } else {
-                SwiftUISplashScreen(isActive: $isActive)
-                    .edgesIgnoringSafeArea(.all)
+            ZStack {
+                if isActive {
+                    ContentView()
+                        .transition(.opacity)
+                } else {
+                    SwiftUISplashScreen(isActive: $isActive)
+                }
             }
+            .animation(.easeInOut(duration: 0.3), value: isActive)
         }
     }
 }
