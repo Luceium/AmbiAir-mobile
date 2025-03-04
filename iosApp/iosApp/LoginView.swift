@@ -2,8 +2,12 @@ import SwiftUI
 import UIKit
 
 struct LoginView: UIViewControllerRepresentable {
+    var onDismiss: (() -> Void)?
+
     func makeUIViewController(context: Context) -> UIViewController {
-        return LoginViewController()
+        let controller = LoginViewController()
+        controller.onDismiss = onDismiss
+        return controller
     }
 
     func updateUIViewController(_ uiViewController: UIViewController, context: Context) {}
@@ -11,7 +15,8 @@ struct LoginView: UIViewControllerRepresentable {
 
 class LoginViewController: UIViewController {
     // UI Components
-    private var titleLabel: UILabel!
+    private var logoImageView: UIImageView!
+    private var logoTextImageView: UIImageView!
     private var taglineLabel: UILabel!
     private var emailTextField: UITextField!
     private var passwordTextField: UITextField!
@@ -20,6 +25,9 @@ class LoginViewController: UIViewController {
     private var checkboxView: UIView!
     private var activityIndicator: UIActivityIndicatorView!
     private var formStackView: UIStackView!
+    private var dismissButton: UIButton!
+
+    var onDismiss: (() -> Void)?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,46 +39,55 @@ class LoginViewController: UIViewController {
         view.backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 1)
 
         // Setup all UI components
-        setupTitleAndTagline()
+        setupLogoAndTagline()
         setupFormStackView()
         setupBiometricsOption()
         setupActivityIndicator()
+        setupDismissButton()
     }
 
-    private func setupTitleAndTagline() {
-        // App title label
-        titleLabel = UILabel()
-        titleLabel.font = UIFont(name: "MuseoModerno-Regular", size: 64) ?? UIFont.systemFont(ofSize: 64)
-        titleLabel.textAlignment = .center
-        titleLabel.text = "ambiair"
-        titleLabel.adjustsFontSizeToFitWidth = true
-        titleLabel.minimumScaleFactor = 0.5
+    private func setupLogoAndTagline() {
+        // Logo text image
+        logoTextImageView = UIImageView(image: UIImage(named: "logo-text"))
+        logoTextImageView.contentMode = .scaleAspectFit
 
-        view.addSubview(titleLabel)
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(logoTextImageView)
+        logoTextImageView.translatesAutoresizingMaskIntoConstraints = false
+
+        // Match the width of the form fields (50pt from each side)
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 50),
-            titleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 30),
-            titleLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -30),
-            titleLabel.heightAnchor.constraint(equalToConstant: 102)
+            logoTextImageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 70),
+            logoTextImageView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 65),
+            logoTextImageView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -65),
+            logoTextImageView.heightAnchor.constraint(equalToConstant: 45)
         ])
 
         // Tagline label
         taglineLabel = UILabel()
         taglineLabel.textColor = UIColor(red: 0, green: 0, blue: 0, alpha: 1)
         taglineLabel.font = UIFont(name: "JosefinSans-Regular", size: 24) ?? UIFont.systemFont(ofSize: 24)
-        taglineLabel.numberOfLines = 0
+        taglineLabel.numberOfLines = 2
         taglineLabel.lineBreakMode = .byWordWrapping
         taglineLabel.textAlignment = .center
         taglineLabel.text = "Save your wallet\nSave the planet"
 
+        // Add line spacing with attributed string
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = 8
+        paragraphStyle.alignment = .center
+        let attributes: [NSAttributedString.Key: Any] = [
+            .paragraphStyle: paragraphStyle,
+            .font: taglineLabel.font!
+        ]
+        taglineLabel.attributedText = NSAttributedString(string: "Save your wallet\nSave the planet", attributes: attributes)
+
         view.addSubview(taglineLabel)
         taglineLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            taglineLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 10),
+            taglineLabel.topAnchor.constraint(equalTo: logoTextImageView.bottomAnchor, constant: 25),
             taglineLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 30),
             taglineLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -30),
-            taglineLabel.heightAnchor.constraint(equalToConstant: 48)
+            taglineLabel.heightAnchor.constraint(equalToConstant: 70)
         ])
     }
 
@@ -85,7 +102,7 @@ class LoginViewController: UIViewController {
         view.addSubview(formStackView)
         formStackView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            formStackView.topAnchor.constraint(equalTo: taglineLabel.bottomAnchor, constant: 50),
+            formStackView.topAnchor.constraint(equalTo: taglineLabel.bottomAnchor, constant: 70),
             formStackView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 50),
             formStackView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -50),
         ])
@@ -208,6 +225,22 @@ class LoginViewController: UIViewController {
         ])
     }
 
+    private func setupDismissButton() {
+        dismissButton = UIButton(type: .system)
+        dismissButton.setImage(UIImage(systemName: "xmark.circle.fill"), for: .normal)
+        dismissButton.tintColor = .gray
+        dismissButton.addTarget(self, action: #selector(dismissButtonTapped), for: .touchUpInside)
+
+        view.addSubview(dismissButton)
+        dismissButton.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            dismissButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
+            dismissButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            dismissButton.widthAnchor.constraint(equalToConstant: 30),
+            dismissButton.heightAnchor.constraint(equalToConstant: 30)
+        ])
+    }
+
     @objc private func togglePasswordVisibility(_ sender: UIButton) {
         passwordTextField.isSecureTextEntry.toggle()
 
@@ -275,6 +308,14 @@ class LoginViewController: UIViewController {
         }
     }
 
+    @objc private func dismissButtonTapped() {
+        if let onDismiss = onDismiss {
+            onDismiss()
+        } else {
+            dismiss(animated: true)
+        }
+    }
+
     private func showAlert(title: String, message: String) {
         let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alertController.addAction(UIAlertAction(title: "OK", style: .default))
@@ -295,16 +336,10 @@ extension LoginViewController: UITextFieldDelegate {
     }
 }
 
-// SwiftUI wrapper for preview and integration
-struct LoginViewUI: View {
-    var body: some View {
-        LoginView()
-            .edgesIgnoringSafeArea(.all)
-    }
-}
-
-struct LoginViewUI_Previews: PreviewProvider {
+// SwiftUI wrapper for preview
+struct LoginView_Previews: PreviewProvider {
     static var previews: some View {
-        LoginViewUI()
+        LoginView(onDismiss: {})
+            .edgesIgnoringSafeArea(.all)
     }
 }

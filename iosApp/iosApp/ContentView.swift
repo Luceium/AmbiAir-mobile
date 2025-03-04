@@ -38,7 +38,10 @@ struct ContentView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .padding()
             .fullScreenCover(isPresented: $showLoginView) {
-                LoginViewUI()
+                LoginView(onDismiss: {
+                    showLoginView = false
+                })
+                .edgesIgnoringSafeArea(.all)
             }
         }
     }
