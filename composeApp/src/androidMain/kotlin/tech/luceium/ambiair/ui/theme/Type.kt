@@ -1,38 +1,40 @@
-package com.example.ui.theme
+package tech.luceium.ambiair.ui.theme
 
 import androidx.compose.material3.Typography
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.ExperimentalTextApi
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontVariation
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
+import tech.luceium.ambiair.R
 
-import androidx.compose.ui.text.googlefonts.GoogleFont
-import androidx.compose.ui.text.googlefonts.Font
-
-val provider = GoogleFont.Provider(
-    providerAuthority = "com.google.android.gms.fonts",
-    providerPackage = "com.google.android.gms",
-    certificates = R.array.com_google_android_gms_fonts_certs
+@OptIn(ExperimentalTextApi::class)
+val MuseoModerno = FontFamily(
+    Font(R.font.museo_moderno_variablefont_wght, variationSettings = FontVariation.Settings(
+        FontVariation.weight(700),
+        FontVariation.width(30f),
+        FontVariation.slant(-6f),
+    ))
 )
 
-val bodyFontFamily = FontFamily(
-    Font(
-        googleFont = GoogleFont("Josefin Sans"),
-        fontProvider = provider,
-    )
+@OptIn(ExperimentalTextApi::class)
+val JosefinSans = FontFamily(
+    Font(R.font.josefine_sans_variablefont_wght, variationSettings = FontVariation.Settings(
+        FontVariation.weight(1000),
+        FontVariation.width(30f),
+        FontVariation.slant(-6f),
+    ))
 )
 
-val displayFontFamily = FontFamily(
-    Font(
-        googleFont = GoogleFont("MuseoModerno"),
-        fontProvider = provider,
-    )
-)
+val displayFontFamily = MuseoModerno
+
+val bodyFontFamily = JosefinSans
 
 // Default Material 3 typography values
 val baseline = Typography()
 
-val AppTypography = Typography(
+val AmbiAirTypography = Typography(
     displayLarge = baseline.displayLarge.copy(fontFamily = displayFontFamily),
     displayMedium = baseline.displayMedium.copy(fontFamily = displayFontFamily),
     displaySmall = baseline.displaySmall.copy(fontFamily = displayFontFamily),
